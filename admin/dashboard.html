@@ -206,19 +206,48 @@
             await loadPosts();
         }
         
-        function saveGitHubConfig(e) {
+        async function saveGitHubConfig(e) {
             e.preventDefault();
             
             const token = document.getElementById('githubToken').value.trim();
             const username = document.getElementById('githubUsername').value.trim();
             const repo = document.getElementById('githubRepo').value.trim();
             
-            localStorage.setItem('github_token', token);
-            localStorage.setItem('github_username', username);
-            localStorage.setItem('github_repo', repo);
+            // Validate token format
+            if (!token.startsWith('github_pat_') && !token.startsWith('ghp_')) {
+                showToast('Invalid token format. Must start with github_pat_ or ghp_', 'error');
+                return;
+            }
             
-            showToast('Configuration saved! Reloading...', 'success');
-            setTimeout(() => window.location.reload(), 1500);
+            // Test token before saving
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🔄 Testing token...';
+            
+            try {
+                const response = await fetch('https://api.github.com/user', {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Invalid token or insufficient permissions');
+                }
+                
+                // Save configuration
+                localStorage.setItem('github_token', token);
+                localStorage.setItem('github_username', username);
+                localStorage.setItem('github_repo', repo);
+                
+                showToast('✅ Configuration saved! Reloading...', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            } catch (error) {
+                showToast('❌ Token validation failed: ' + error.message, 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💾 Save Configuration';
+            }
         }
         
         async function loadPosts() {
