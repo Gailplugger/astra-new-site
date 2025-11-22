@@ -142,8 +142,12 @@
                 
                 <div id="emptyState" class="empty-state" style="display: none;">
                     <h3>No posts yet</h3>
-                    <p>Create your first blog post to get started!</p>
+                    <p id="emptyStateMessage">Create your first blog post to get started!</p>
                     <a href="new-post.html" class="btn btn-primary">Create First Post</a>
+                    <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                        <strong>💡 Tip:</strong> If GitHub token not configured, 
+                        <a href="#" onclick="document.getElementById('githubSetup').style.display='block'; return false;">click here to configure</a>
+                    </p>
                 </div>
                 
                 <div id="postsTable" style="display: none;">
@@ -261,7 +265,11 @@
             emptyEl.style.display = 'none';
             
             try {
-                const posts = await listPosts();
+                console.log('Loading posts from GitHub...');
+                const posts = await Promise.race([
+                    listPosts(),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout. Check your internet connection.')), 15000))
+                ]);
                 
                 if (posts.length === 0) {
                     loadingEl.style.display = 'none';
@@ -317,9 +325,25 @@
                 
             } catch (error) {
                 console.error('Error loading posts:', error);
-                showToast('Failed to load posts. Check console.', 'error');
                 loadingEl.style.display = 'none';
+                
+                // Show specific error messages
+                let errorMsg = 'Failed to load posts: ' + error.message;
+                if (error.message.includes('401') || error.message.includes('Invalid token')) {
+                    errorMsg = 'Invalid GitHub token. Please reconfigure.';
+                    document.getElementById('githubSetup').style.display = 'block';
+                } else if (error.message.includes('404')) {
+                    errorMsg = 'Posts folder not found. Create your first post!';
+                    emptyEl.style.display = 'block';
+                    updateStats(0, 0, '-', 0);
+                    return;
+                } else if (error.message.includes('timeout')) {
+                    errorMsg = 'Connection timeout. Check your internet or GitHub token.';
+                }
+                
+                showToast(errorMsg, 'error');
                 emptyEl.style.display = 'block';
+                updateStats(0, 0, '-', 0);
             }
         }
         
