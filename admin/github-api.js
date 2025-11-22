@@ -15,6 +15,12 @@ function getGitHubConfig() {
 // API Request Helper
 async function githubRequest(endpoint, method = 'GET', body = null) {
     const config = getGitHubConfig();
+    
+    // Validate token exists
+    if (!config.token || config.token === 'PASTE_TOKEN_HERE') {
+        throw new Error('GitHub token not configured. Please configure it in the dashboard settings.');
+    }
+    
     const url = `https://api.github.com/repos/${config.username}/${config.repo}/contents/${endpoint}`;
     
     const headers = {
@@ -32,6 +38,9 @@ async function githubRequest(endpoint, method = 'GET', body = null) {
         const response = await fetch(url, options);
         
         if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error('Invalid GitHub token. Please check your token in dashboard settings.');
+            }
             const error = await response.json();
             throw new Error(error.message || `HTTP ${response.status}: ${response.statusText}`);
         }
