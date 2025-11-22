@@ -76,15 +76,29 @@ async function listPosts() {
 
 // Get single post content
 async function getPost(slug) {
-    const data = await githubRequest(`posts/${slug}.md`);
+    console.log('Fetching post:', slug);
+    const data = await Promise.race([
+        githubRequest(`posts/${slug}.md`),
+        new Promise((_, reject) => 
+            setTimeout(() => reject(new Error(`Timeout fetching post: ${slug}`)), 10000)
+        )
+    ]);
     const content = atob(data.content);
+    console.log('Post fetched:', slug);
     return content;
 }
 
 // Get post with SHA (for editing)
 async function getPostWithSha(slug) {
-    const data = await githubRequest(`posts/${slug}.md`);
+    console.log('Fetching post with SHA:', slug);
+    const data = await Promise.race([
+        githubRequest(`posts/${slug}.md`),
+        new Promise((_, reject) => 
+            setTimeout(() => reject(new Error(`Timeout fetching post with SHA: ${slug}`)), 10000)
+        )
+    ]);
     const content = atob(data.content);
+    console.log('Post with SHA fetched:', slug);
     return { content, sha: data.sha };
 }
 
