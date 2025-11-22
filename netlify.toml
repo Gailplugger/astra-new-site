@@ -1,0 +1,44 @@
+[build]
+  publish = "."
+  command = "echo 'No build command needed for static site'"
+
+# Redirects are handled by _redirects file
+# Keeping this for backwards compatibility
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/cms-admin"
+  to = "/cms-admin/login.html"
+  status = 200
+
+[[redirects]]
+  from = "/cms-admin/*"
+  to = "/cms-admin/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/blog/*"
+  to = "/post.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"

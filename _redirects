@@ -1,0 +1,13 @@
+# Admin panel redirects
+/admin              /admin/index.html           200
+/admin/*            /admin/:splat               200
+
+# CMS Admin redirects
+/cms-admin          /cms-admin/login.html       200
+/cms-admin/*        /cms-admin/:splat           200
+
+# Blog post redirects - handle dynamic routes
+/blog/*             /post.html                  200
+
+# Catch-all for SPA routing (must be last)
+/*                  /index.html                 200
