@@ -1,0 +1,55 @@
+# robots.txt for AstraForensics
+# https://astraforensics.in
+
+User-agent: *
+Allow: /
+
+# Disallow admin area
+Disallow: /admin/
+Disallow: /admin/*
+
+# Disallow local setup files
+Disallow: /SETUP-LOCAL.html
+Disallow: /TOKEN-LOCAL.md
+
+# Allow all resources
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /logos/
+Allow: /uploads/
+
+# Sitemap location
+Sitemap: https://astraforensics.in/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 0
+
+# Specific bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Block bad bots
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
