@@ -12,8 +12,8 @@ async function loadBlogPosts() {
     const blogGrid = document.getElementById('blogGrid');
     
     try {
-        // Fetch all blog post files from GitHub
-        const response = await fetch('https://api.github.com/repos/Gailplugger/astra-new-site/contents/blog');
+        // Fetch all blog post files from GitHub - now from /posts folder
+        const response = await fetch('https://api.github.com/repos/Gailplugger/astra-new-site/contents/posts');
         
         if (!response.ok) {
             throw new Error('Failed to fetch blog posts');
