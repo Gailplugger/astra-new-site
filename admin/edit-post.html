@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post - Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>🔐 Admin</h2>
+                <p class="admin-user" id="adminUser">Loading...</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    📊 Dashboard
+                </a>
+                <a href="new-post.html" class="nav-item">
+                    ➕ New Post
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn-logout" id="logoutBtn">
+                    🚪 Logout
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Edit Post</h1>
+                <div class="header-actions">
+                    <button class="btn-theme" id="themeToggle">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </header>
+            
+            <div id="loadingPost" class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading post...</p>
+            </div>
+            
+            <form id="postForm" class="post-form" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="postTitle">Title *</label>
+                        <input 
+                            type="text" 
+                            id="postTitle" 
+                            placeholder="Enter post title"
+                            required
+                        >
+                        <small>Slug: <span id="slugPreview">your-post-title</span></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="postDate">Date *</label>
+                        <input 
+                            type="date" 
+                            id="postDate" 
+                            required
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postDescription">Meta Description</label>
+                    <textarea 
+                        id="postDescription" 
+                        rows="2" 
+                        placeholder="SEO description (150-160 characters recommended)"
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postTags">Tags</label>
+                    <input 
+                        type="text" 
+                        id="postTags" 
+                        placeholder="e.g. digital forensics, tutorial, cybersecurity"
+                    >
+                    <small>Separate tags with commas</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cover Image</label>
+                    <div class="image-upload-area" id="imageUploadArea">
+                        <div id="uploadPrompt" class="upload-prompt">
+                            <span class="upload-icon">📷</span>
+                            <p>Click to upload or drag & drop</p>
+                            <small>Max 5MB (JPG, PNG, GIF)</small>
+                        </div>
+                        <div id="imagePreview" class="image-preview" style="display: none;">
+                            <img id="previewImg" src="" alt="Preview">
+                            <button type="button" class="btn-remove" id="removeImage">✕</button>
+                        </div>
+                    </div>
+                    <input type="file" id="coverImageInput" accept="image/*" style="display: none;">
+                    <input type="hidden" id="coverImageUrl">
+                </div>
+                
+                <div class="form-group">
+                    <label for="postContent">Content (Markdown) *</label>
+                    <div class="editor-toolbar">
+                        <button type="button" class="toolbar-btn" data-action="bold" title="Bold">
+                            <strong>B</strong>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="italic" title="Italic">
+                            <em>I</em>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="heading" title="Heading">
+                            H
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="link" title="Link">
+                            🔗
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="image" title="Image">
+                            🖼️
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="code" title="Code">
+                            &lt;&gt;
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="list" title="List">
+                            •
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="preview" title="Preview">
+                            👁️
+                        </button>
+                    </div>
+                    <textarea 
+                        id="postContent" 
+                        rows="20" 
+                        placeholder="Write your post content in Markdown..."
+                        required
+                    ></textarea>
+                    <div id="markdownPreview" class="markdown-preview" style="display: none;"></div>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="dashboard.html" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary" id="publishBtn">
+                        <span id="publishBtnText">📤 Update Post</span>
+                        <span id="publishBtnLoader" class="loader" style="display: none;"></span>
+                    </button>
+                </div>
+                
+                <!-- Hidden fields for edit mode -->
+                <input type="hidden" id="isEditMode" value="true">
+                <input type="hidden" id="postSlug">
+                <input type="hidden" id="postSha">
+            </form>
+        </main>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+    
+    <script src="auth.js"></script>
+    <script src="github-api.js"></script>
+    <script src="editor.js"></script>
+    <script>
+        // Load post for editing
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            
+            if (!slug) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+            
+            try {
+                const { content, sha } = await getPostWithSha(slug);
+                const { frontmatter, body } = parseFrontmatter(content);
+                
+                document.getElementById('postTitle').value = frontmatter.title || '';
+                document.getElementById('postDate').value = frontmatter.date || '';
+                document.getElementById('postDescription').value = frontmatter.description || '';
+                document.getElementById('postTags').value = frontmatter.tags || '';
+                document.getElementById('coverImageUrl').value = frontmatter.cover_image || '';
+                document.getElementById('postContent').value = body;
+                document.getElementById('postSlug').value = slug;
+                document.getElementById('postSha').value = sha;
+                
+                // Update slug preview
+                document.getElementById('slugPreview').textContent = slug;
+                
+                // Show image preview if exists
+                if (frontmatter.cover_image) {
+                    document.getElementById('previewImg').src = frontmatter.cover_image;
+                    document.getElementById('uploadPrompt').style.display = 'none';
+                    document.getElementById('imagePreview').style.display = 'block';
+                }
+                
+                document.getElementById('loadingPost').style.display = 'none';
+                document.getElementById('postForm').style.display = 'block';
+                
+            } catch (error) {
+                showToast('Failed to load post: ' + error.message, 'error');
+                setTimeout(() => window.location.href = 'dashboard.html', 2000);
+            }
+        });
+        
+        function parseFrontmatter(content) {
+            const regex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+            const match = content.match(regex);
+            
+            if (!match) return { frontmatter: {}, body: content };
+            
+            const frontmatter = {};
+            match[1].split('\n').forEach(line => {
+                const [key, ...valueParts] = line.split(':');
+                if (key && valueParts.length > 0) {
+                    const value = valueParts.join(':').trim();
+                    frontmatter[key.trim()] = value.replace(/^["']|["']$/g, '');
+                }
+            });
+            
+            return { frontmatter, body: match[2].trim() };
+        }
+    </script>
+</body>
+</html>

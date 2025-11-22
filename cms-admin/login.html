@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Blog CMS</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-circle">📝</div>
+                <h1>Blog CMS</h1>
+                <p>Admin Panel Login</p>
+            </div>
+
+            <div id="error-message" class="error-alert" style="display: none;">
+                <span class="error-icon">⚠️</span>
+                <span class="error-text">Invalid username or password</span>
+            </div>
+
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter your username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-loader" style="display: none;">⏳</span>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>Secure admin access only</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // ADMIN CREDENTIALS (CHANGE THESE!)
+        // ============================================
+        const ADMIN_USERNAME = "kartikgoyal";
+        const ADMIN_PASSWORD = "K7RTK@2580";
+
+        // Check if already logged in
+        if (localStorage.getItem('cms_auth') === 'authenticated') {
+            window.location.href = 'dashboard.html';
+        }
+
+        // Login form handler
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+            const btnText = document.querySelector('.btn-text');
+            const btnLoader = document.querySelector('.btn-loader');
+
+            // Show loading
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline-block';
+
+            // Simulate delay for security
+            setTimeout(() => {
+                if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                    // Success
+                    localStorage.setItem('cms_auth', 'authenticated');
+                    localStorage.setItem('cms_user', username);
+                    localStorage.setItem('cms_login_time', new Date().toISOString());
+                    window.location.href = 'dashboard.html';
+                } else {
+                    // Failed
+                    errorMessage.style.display = 'flex';
+                    btnText.style.display = 'inline-block';
+                    btnLoader.style.display = 'none';
+                    document.getElementById('password').value = '';
+                    
+                    // Shake animation
+                    errorMessage.style.animation = 'shake 0.4s';
+                    setTimeout(() => {
+                        errorMessage.style.animation = '';
+                    }, 400);
+
+                    // Hide error after 3 seconds
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                }
+            }, 800);
+        });
+    </script>
+</body>
+</html>

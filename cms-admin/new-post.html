@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Post - Blog CMS</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">📝</span>
+                <span class="logo-text">Blog CMS</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="new-post.html" class="nav-item active">
+                <span class="nav-icon">➕</span>
+                <span class="nav-text">New Post</span>
+            </a>
+            <a href="../blog.html" class="nav-item" target="_blank">
+                <span class="nav-icon">🌐</span>
+                <span class="nav-text">View Blog</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">K</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">Admin</div>
+                    <div class="user-role">Administrator</div>
+                </div>
+            </div>
+            <button class="btn-logout" id="logoutBtn">
+                <span>🚪</span> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="btn-menu" id="menuToggle">☰</button>
+                <h1 class="page-title" id="pageTitle">Create New Post</h1>
+            </div>
+            <div class="top-bar-right">
+                <button class="btn-theme" id="themeToggle" title="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
+                    <span>← Back</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-wrapper">
+            <form id="postForm" class="post-form">
+                <input type="hidden" id="postSlug">
+                <input type="hidden" id="postSha">
+                <input type="hidden" id="isEditMode" value="false">
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="postTitle">Post Title *</label>
+                        <input type="text" id="postTitle" class="form-control" placeholder="Enter your post title" required>
+                        <small>Slug: <span id="slugPreview">auto-generated-from-title</span></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="postDate">Publish Date *</label>
+                        <input type="date" id="postDate" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="postDescription">Meta Description</label>
+                    <textarea id="postDescription" class="form-control" rows="2" placeholder="Brief description for SEO (160 characters recommended)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="postTags">Tags</label>
+                    <input type="text" id="postTags" class="form-control" placeholder="e.g. javascript, web-development, tutorial (comma separated)">
+                    <small>Separate tags with commas</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Cover Image</label>
+                    <div class="image-upload-area" id="imageUploadArea">
+                        <input type="file" id="coverImageInput" accept="image/*" style="display: none;">
+                        <div id="uploadPrompt" class="upload-prompt">
+                            <div class="upload-icon">📷</div>
+                            <p><strong>Click to upload</strong> or drag and drop</p>
+                            <small>PNG, JPG, GIF up to 5MB</small>
+                        </div>
+                        <div id="imagePreview" class="image-preview" style="display: none;">
+                            <img id="previewImg" src="" alt="Preview">
+                            <button type="button" class="btn-remove-image" id="removeImage">✕</button>
+                        </div>
+                    </div>
+                    <input type="text" id="coverImageUrl" class="form-control" placeholder="Or paste image URL" style="margin-top: 10px;">
+                </div>
+
+                <div class="form-group">
+                    <label for="postContent">Content (Markdown) *</label>
+                    <div class="editor-toolbar">
+                        <button type="button" class="toolbar-btn" data-action="bold" title="Bold">
+                            <strong>B</strong>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="italic" title="Italic">
+                            <em>I</em>
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="heading" title="Heading">
+                            H
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="link" title="Link">
+                            🔗
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="image" title="Image">
+                            🖼️
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="code" title="Code">
+                            &lt;/&gt;
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="list" title="List">
+                            ≡
+                        </button>
+                        <button type="button" class="toolbar-btn" data-action="preview" title="Toggle Preview">
+                            👁️
+                        </button>
+                    </div>
+                    <textarea id="postContent" class="form-control markdown-editor" rows="20" placeholder="Write your post content in Markdown..." required></textarea>
+                    <div id="markdownPreview" class="markdown-preview" style="display: none;"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+                        <span>💾</span> Save Draft
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="publishBtn">
+                        <span id="publishBtnText">📤 Publish Post</span>
+                        <span id="publishBtnLoader" class="btn-spinner" style="display: none;"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="assets/admin.js"></script>
+    <script>
+        // Check authentication
+        if (localStorage.getItem('cms_auth') !== 'authenticated') {
+            window.location.href = 'login.html';
+        }
+
+        // Load user name
+        const userName = localStorage.getItem('cms_user') || 'Admin';
+        document.getElementById('userName').textContent = userName;
+
+        // Set today's date as default
+        document.getElementById('postDate').valueAsDate = new Date();
+
+        // Check if editing
+        const urlParams = new URLSearchParams(window.location.search);
+        const editSlug = urlParams.get('edit');
+        
+        if (editSlug) {
+            document.getElementById('pageTitle').textContent = 'Edit Post';
+            document.getElementById('isEditMode').value = 'true';
+            loadPostForEdit(editSlug);
+        }
+
+        // Initialize post editor
+        initPostEditor();
+    </script>
+</body>
+</html>

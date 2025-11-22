@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>🔐 Admin</h2>
+                <p class="admin-user" id="adminUser">Loading...</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    📊 Dashboard
+                </a>
+                <a href="new-post.html" class="nav-item">
+                    ➕ New Post
+                </a>
+                <a href="#" class="nav-item" id="refreshBtn">
+                    🔄 Refresh Posts
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn-logout" id="logoutBtn">
+                    🚪 Logout
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Blog Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn-theme" id="themeToggle">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- GitHub Configuration (shown if not configured) -->
+            <section id="githubSetup" style="display: none;">
+                <div class="card">
+                    <h2>⚙️ GitHub Configuration Required</h2>
+                    <p>Please configure your GitHub settings to start managing posts.</p>
+                    
+                    <form id="githubConfigForm" class="config-form">
+                        <div class="form-group">
+                            <label for="githubToken">GitHub Personal Access Token</label>
+                            <input 
+                                type="password" 
+                                id="githubToken" 
+                                placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                                required
+                            >
+                            <small>Generate token at: GitHub Settings → Developer settings → Personal access tokens</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="githubUsername">GitHub Username</label>
+                            <input 
+                                type="text" 
+                                id="githubUsername" 
+                                placeholder="your-username"
+                                value="Gailplugger"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="githubRepo">Repository Name</label>
+                            <input 
+                                type="text" 
+                                id="githubRepo" 
+                                placeholder="your-repo-name"
+                                value="astra-new-site"
+                                required
+                            >
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            💾 Save Configuration
+                        </button>
+                    </form>
+                </div>
+            </section>
+            
+            <!-- Stats Grid -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-content">
+                        <h3>Total Posts</h3>
+                        <p class="stat-value" id="totalPosts">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🖼️</div>
+                    <div class="stat-content">
+                        <h3>Images</h3>
+                        <p class="stat-value" id="totalImages">0</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-content">
+                        <h3>Last Post</h3>
+                        <p class="stat-value" id="lastPost">-</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🏷️</div>
+                    <div class="stat-content">
+                        <h3>Tags</h3>
+                        <p class="stat-value" id="totalTags">0</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Posts Section -->
+            <section id="postsSection" class="posts-section">
+                <div class="section-header">
+                    <h2>Recent Posts</h2>
+                    <a href="new-post.html" class="btn btn-primary">➕ New Post</a>
+                </div>
+                
+                <div id="loadingPosts" class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading posts...</p>
+                </div>
+                
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <h3>No posts yet</h3>
+                    <p>Create your first blog post to get started!</p>
+                    <a href="new-post.html" class="btn btn-primary">Create First Post</a>
+                </div>
+                
+                <div id="postsTable" style="display: none;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Tags</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="postsTableBody">
+                            <!-- Posts will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+    
+    <script src="auth.js"></script>
+    <script src="github-api.js"></script>
+    <script>
+        // Check authentication
+        if (!isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+        
+        // Display username
+        document.getElementById('adminUser').textContent = getUsername();
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', initDashboard);
+        
+        async function initDashboard() {
+            // Check GitHub config
+            const token = localStorage.getItem('github_token');
+            const username = localStorage.getItem('github_username');
+            const repo = localStorage.getItem('github_repo');
+            
+            if (!token || !username || !repo) {
+                document.getElementById('githubSetup').style.display = 'block';
+                document.getElementById('postsSection').style.display = 'none';
+                
+                // Prefill if available
+                if (token) document.getElementById('githubToken').value = token;
+                if (username) document.getElementById('githubUsername').value = username;
+                if (repo) document.getElementById('githubRepo').value = repo;
+                
+                // Setup form handler
+                document.getElementById('githubConfigForm').addEventListener('submit', saveGitHubConfig);
+                return;
+            }
+            
+            // Load posts
+            await loadPosts();
+        }
+        
+        function saveGitHubConfig(e) {
+            e.preventDefault();
+            
+            const token = document.getElementById('githubToken').value.trim();
+            const username = document.getElementById('githubUsername').value.trim();
+            const repo = document.getElementById('githubRepo').value.trim();
+            
+            localStorage.setItem('github_token', token);
+            localStorage.setItem('github_username', username);
+            localStorage.setItem('github_repo', repo);
+            
+            showToast('Configuration saved! Reloading...', 'success');
+            setTimeout(() => window.location.reload(), 1500);
+        }
+        
+        async function loadPosts() {
+            const loadingEl = document.getElementById('loadingPosts');
+            const tableEl = document.getElementById('postsTable');
+            const emptyEl = document.getElementById('emptyState');
+            const tbody = document.getElementById('postsTableBody');
+            
+            loadingEl.style.display = 'flex';
+            tableEl.style.display = 'none';
+            emptyEl.style.display = 'none';
+            
+            try {
+                const posts = await listPosts();
+                
+                if (posts.length === 0) {
+                    loadingEl.style.display = 'none';
+                    emptyEl.style.display = 'block';
+                    updateStats(0, 0, '-', 0);
+                    return;
+                }
+                
+                // Sort by name (newest first)
+                posts.sort((a, b) => b.name.localeCompare(a.name));
+                
+                // Load first 10 posts details
+                const postDetails = [];
+                for (const post of posts.slice(0, 10)) {
+                    try {
+                        const content = await getPost(post.name.replace('.md', ''));
+                        const { frontmatter } = parseFrontmatter(content);
+                        postDetails.push({ ...post, frontmatter });
+                    } catch (error) {
+                        console.error('Error loading post:', error);
+                    }
+                }
+                
+                // Render table
+                tbody.innerHTML = postDetails.map(post => `
+                    <tr>
+                        <td><strong>${post.frontmatter.title || post.name}</strong></td>
+                        <td>${formatDate(post.frontmatter.date || new Date().toISOString())}</td>
+                        <td>${(post.frontmatter.tags || 'none').split(',').map(t => \`<span class="tag">\${t.trim()}</span>\`).join(' ')}</td>
+                        <td class="table-actions">
+                            <a href="edit-post.html?slug=${post.name.replace('.md', '')}" class="btn btn-secondary btn-sm">
+                                ✏️ Edit
+                            </a>
+                            <button class="btn btn-danger btn-sm" onclick="deletePostConfirm('${post.name.replace('.md', '')}', '${post.sha}')">
+                                🗑️ Delete
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                loadingEl.style.display = 'none';
+                tableEl.style.display = 'block';
+                
+                // Update stats
+                const allTags = new Set();
+                postDetails.forEach(p => {
+                    if (p.frontmatter.tags) {
+                        p.frontmatter.tags.split(',').forEach(t => allTags.add(t.trim()));
+                    }
+                });
+                
+                updateStats(posts.length, 0, postDetails[0]?.frontmatter.date || '-', allTags.size);
+                
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                showToast('Failed to load posts. Check console.', 'error');
+                loadingEl.style.display = 'none';
+                emptyEl.style.display = 'block';
+            }
+        }
+        
+        function updateStats(totalPosts, totalImages, lastPost, totalTags) {
+            document.getElementById('totalPosts').textContent = totalPosts;
+            document.getElementById('totalImages').textContent = totalImages;
+            document.getElementById('lastPost').textContent = lastPost === '-' ? '-' : formatDate(lastPost);
+            document.getElementById('totalTags').textContent = totalTags;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+        
+        function parseFrontmatter(content) {
+            const regex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+            const match = content.match(regex);
+            
+            if (!match) return { frontmatter: {}, body: content };
+            
+            const frontmatter = {};
+            match[1].split('\n').forEach(line => {
+                const [key, ...valueParts] = line.split(':');
+                if (key && valueParts.length > 0) {
+                    const value = valueParts.join(':').trim();
+                    frontmatter[key.trim()] = value.replace(/^["']|["']$/g, '');
+                }
+            });
+            
+            return { frontmatter, body: match[2].trim() };
+        }
+        
+        async function deletePostConfirm(slug, sha) {
+            if (!confirm('Are you sure you want to delete this post? This cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                await deletePost(slug, sha);
+                showToast('Post deleted successfully!', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            } catch (error) {
+                showToast('Failed to delete post: ' + error.message, 'error');
+            }
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.querySelector('.theme-icon').textContent = newTheme === 'light' ? '🌙' : '☀️';
+        });
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.querySelector('.theme-icon').textContent = savedTheme === 'light' ? '🌙' : '☀️';
+        
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.reload();
+        });
+    </script>
+</body>
+</html>
