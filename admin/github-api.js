@@ -83,11 +83,22 @@ async function getPostWithSha(slug) {
 async function createPost(slug, content, commitMessage = 'Create post') {
     const encodedContent = btoa(unescape(encodeURIComponent(content)));
     
-    return await githubRequest(`posts/${slug}.md`, 'PUT', {
-        message: commitMessage,
-        content: encodedContent,
-        branch: getGitHubConfig().branch
-    });
+    // Check if file exists (to get SHA if it does)
+    try {
+        const existing = await getPostWithSha(slug);
+        // File exists, update it instead
+        return await updatePost(slug, content, existing.sha, commitMessage);
+    } catch (error) {
+        // File doesn't exist, create new
+        if (error.message.includes('404') || error.message.includes('Not Found')) {
+            return await githubRequest(`posts/${slug}.md`, 'PUT', {
+                message: commitMessage,
+                content: encodedContent,
+                branch: getGitHubConfig().branch
+            });
+        }
+        throw error;
+    }
 }
 
 // Update existing post

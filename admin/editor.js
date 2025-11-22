@@ -290,10 +290,12 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
     try {
         if (isEditMode && existingSha) {
             // Update existing post
+            console.log('Updating post with SHA:', existingSha);
             await updatePost(slug, fullContent, existingSha, `Update: ${title}`);
             showToast('Post updated successfully!', 'success');
         } else {
-            // Create new post
+            // Create new post (will auto-update if exists)
+            console.log('Creating new post:', slug);
             await createPost(slug, fullContent, `Create: ${title}`);
             showToast('Post published successfully!', 'success');
         }
@@ -307,8 +309,19 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
         }, 1500);
         
     } catch (error) {
-        showToast('Failed to publish: ' + error.message, 'error');
         console.error('Publish error:', error);
+        
+        // Better error messages
+        let errorMsg = error.message;
+        if (errorMsg.includes('sha')) {
+            errorMsg = 'File already exists. Please edit the existing post instead of creating a new one.';
+        } else if (errorMsg.includes('401')) {
+            errorMsg = 'Invalid GitHub token. Please reconfigure in dashboard.';
+        } else if (errorMsg.includes('404')) {
+            errorMsg = 'Repository or folder not found. Check your GitHub settings.';
+        }
+        
+        showToast('Failed to publish: ' + errorMsg, 'error');
         
         publishBtn.disabled = false;
         btnText.style.display = 'inline';
