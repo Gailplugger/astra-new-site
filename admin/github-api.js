@@ -1,5 +1,5 @@
 // GitHub API Configuration
-const GITHUB_TOKEN = "PASTE_TOKEN_HERE";  // Replace with your GitHub Personal Access Token
+const GITHUB_TOKEN = localStorage.getItem('github_token') || "PASTE_TOKEN_HERE";  // Token from Settings page
 const GITHUB_OWNER = "Gailplugger";  // Your GitHub username
 const GITHUB_REPO = "astra-new-site";  // Your repository name
 const GITHUB_BRANCH = "main";  // Branch name
