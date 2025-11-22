@@ -55,10 +55,19 @@ async function githubRequest(endpoint, method = 'GET', body = null) {
 // List all posts
 async function listPosts() {
     try {
-        const files = await githubRequest('posts');
+        console.log('Fetching posts from GitHub...');
+        const files = await Promise.race([
+            githubRequest('posts'),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('GitHub API timeout after 10 seconds')), 10000)
+            )
+        ]);
+        console.log('Posts fetched:', files.length);
         return files.filter(f => f.name.endsWith('.md'));
     } catch (error) {
+        console.error('listPosts error:', error);
         if (error.message.includes('404')) {
+            console.log('Posts folder not found, returning empty array');
             return []; // posts folder doesn't exist yet
         }
         throw error;
