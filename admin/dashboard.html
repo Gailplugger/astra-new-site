@@ -281,47 +281,35 @@
                 // Sort by name (newest first)
                 posts.sort((a, b) => b.name.localeCompare(a.name));
                 
-                // Load first 10 posts details
-                const postDetails = [];
-                for (const post of posts.slice(0, 10)) {
-                    try {
-                        const content = await getPost(post.name.replace('.md', ''));
-                        const { frontmatter } = parseFrontmatter(content);
-                        postDetails.push({ ...post, frontmatter });
-                    } catch (error) {
-                        console.error('Error loading post:', error);
-                    }
-                }
-                
-                // Render table
-                tbody.innerHTML = postDetails.map(post => `
+                // Render table WITHOUT loading content (faster!)
+                tbody.innerHTML = posts.slice(0, 10).map(post => {
+                    const slug = post.name.replace('.md', '');
+                    const title = slug.split('-').slice(3).join(' ').replace(/(^|\s)\S/g, l => l.toUpperCase());
+                    const date = slug.split('-').slice(0, 3).join('-');
+                    
+                    return `
                     <tr>
-                        <td><strong>${post.frontmatter.title || post.name}</strong></td>
-                        <td>${formatDate(post.frontmatter.date || new Date().toISOString())}</td>
-                        <td>${(post.frontmatter.tags || 'none').split(',').map(t => \`<span class="tag">\${t.trim()}</span>\`).join(' ')}</td>
+                        <td><strong>${title || post.name}</strong></td>
+                        <td>${formatDate(date)}</td>
+                        <td><span class="tag">Click Edit to view tags</span></td>
                         <td class="table-actions">
-                            <a href="edit-post.html?slug=${post.name.replace('.md', '')}" class="btn btn-secondary btn-sm">
+                            <a href="edit-post.html?slug=${slug}" class="btn btn-secondary btn-sm">
                                 ✏️ Edit
                             </a>
-                            <button class="btn btn-danger btn-sm" onclick="deletePostConfirm('${post.name.replace('.md', '')}', '${post.sha}')">
+                            <button class="btn btn-danger btn-sm" onclick="deletePostConfirm('${slug}', '${post.sha}')">
                                 🗑️ Delete
                             </button>
                         </td>
                     </tr>
-                `).join('');
+                `;
+                }).join('');
                 
                 loadingEl.style.display = 'none';
                 tableEl.style.display = 'block';
                 
-                // Update stats
-                const allTags = new Set();
-                postDetails.forEach(p => {
-                    if (p.frontmatter.tags) {
-                        p.frontmatter.tags.split(',').forEach(t => allTags.add(t.trim()));
-                    }
-                });
-                
-                updateStats(posts.length, 0, postDetails[0]?.frontmatter.date || '-', allTags.size);
+                // Update stats (simplified without loading content)
+                const firstDate = posts[0]?.name.split('-').slice(0, 3).join('-') || '-';
+                updateStats(posts.length, 0, firstDate, posts.length);
                 
             } catch (error) {
                 console.error('Error loading posts:', error);
