@@ -1,6 +1,7 @@
 # Local files with sensitive data
 TOKEN-LOCAL.md
 *-LOCAL.md
+*-LOCAL.html
 *.local
 
 # Environment variables
