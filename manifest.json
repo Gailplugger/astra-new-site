@@ -1,0 +1,26 @@
+{
+  "name": "AstraForensics",
+  "short_name": "AstraForensics",
+  "description": "Professional cybersecurity services by Kartik Goyal. Web development, security, ethical hacking, and free account recovery.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0f1e",
+  "theme_color": "#00d4ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logos/sec.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logos/sec.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "categories": ["business", "technology", "security"],
+  "lang": "en",
+  "dir": "ltr",
+  "prefer_related_applications": false
+}

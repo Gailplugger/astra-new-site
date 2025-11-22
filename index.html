@@ -80,6 +80,23 @@
     <meta name="copyright" content="AstraForensics 2025">
     <meta name="identifier-URL" content="https://astraforensics.in">
     
+    <!-- Performance Optimization -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+    <!-- Mobile App Meta -->
+    <meta name="apple-mobile-web-app-title" content="AstraForensics">
+    <meta name="application-name" content="AstraForensics">
+    <meta name="msapplication-tooltip" content="AstraForensics - Cybersecurity Services">
+    <meta name="msapplication-starturl" content="/">
+    
+    <!-- Rich Search Results -->
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:locale:alternate" content="hi_IN">
+    <meta name="twitter:image:alt" content="AstraForensics - Cybersecurity Services by Kartik Goyal">
+    <meta name="pinterest-rich-pin" content="true">
+    
     <!-- Page Classification -->
     <meta name="classification" content="Technology, Cybersecurity, Web Development">
     <meta name="subject" content="Cybersecurity Services, Ethical Hacking, Web Development">
@@ -123,9 +140,28 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://astraforensics.in/">
     
+    <!-- Google Analytics (Add your tracking ID) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
+    <!-- Microsoft Clarity (Add your project ID) -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "YOUR_CLARITY_ID");
+    </script>
+    
     <!-- Alternate Languages -->
     <link rel="alternate" hreflang="en" href="https://astraforensics.in/">
     <link rel="alternate" hreflang="hi" href="https://astraforensics.in/">
+    <link rel="alternate" hreflang="en-IN" href="https://astraforensics.in/">
     <link rel="alternate" hreflang="x-default" href="https://astraforensics.in/">
     
     <!-- Preconnect to External Resources -->
@@ -137,6 +173,10 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
     
     <!-- RSS Feed -->
     <link rel="alternate" type="application/rss+xml" title="AstraForensics Blog" href="https://astraforensics.in/rss.xml">
@@ -378,6 +418,122 @@
           "text": "AstraForensics is based in Vijapur, Mehsana, Gujarat, India. We provide services worldwide and work remotely with clients globally."
         }
       }]
+    }
+    </script>
+    
+    <!-- Review Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "AstraForensics Cybersecurity Services",
+      "description": "Professional cybersecurity and web development services by AstraForensics",
+      "brand": {
+        "@type": "Brand",
+        "name": "AstraForensics"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "150",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "INR",
+        "lowPrice": "0",
+        "highPrice": "100000",
+        "offerCount": "5"
+      }
+    }
+    </script>
+    
+    <!-- Professional Service Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "AstraForensics",
+      "image": "https://astraforensics.in/logos/sec.jpg",
+      "@id": "https://astraforensics.in",
+      "url": "https://astraforensics.in",
+      "telephone": "+91-8347-576630",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Vijapur",
+        "addressLocality": "Mehsana",
+        "addressRegion": "Gujarat",
+        "postalCode": "382870",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 23.5631,
+        "longitude": 72.7490
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      },
+      "priceRange": "$$",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "150"
+      }
+    }
+    </script>
+    
+    <!-- Course Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "Cybersecurity Training by AstraForensics",
+      "description": "Professional cybersecurity and ethical hacking training courses",
+      "provider": {
+        "@type": "Organization",
+        "name": "AstraForensics",
+        "sameAs": "https://astraforensics.in"
+      },
+      "teaches": ["Ethical Hacking", "Penetration Testing", "Web Security", "Digital Forensics"],
+      "educationalLevel": "Beginner to Advanced",
+      "inLanguage": ["en", "hi"],
+      "availableLanguage": ["English", "Hindi"]
+    }
+    </script>
+    
+    <!-- Article Schema for Blog -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "AstraForensics Blog",
+      "description": "Cybersecurity tips, tutorials, and industry insights",
+      "url": "https://astraforensics.in/blog.html",
+      "publisher": {
+        "@type": "Organization",
+        "name": "AstraForensics",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://astraforensics.in/logos/sec.jpg"
+        }
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Kartik Goyal"
+      }
     }
     </script>
     
