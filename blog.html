@@ -56,12 +56,37 @@
     <!-- Blog Header -->
     <section class="blog-header">
         <div class="container">
-            <h1>Our <span class="gradient-text">Blog</span></h1>
-            <p>Stay updated with the latest cybersecurity insights, tutorials, and industry news</p>
+            <div class="blog-header-content">
+                <div class="blog-badge">
+                    <i class="fas fa-shield-alt"></i> Cybersecurity Knowledge Hub
+                </div>
+                <h1>Our <span class="gradient-text">Blog</span></h1>
+                <p class="blog-subtitle">Discover expert insights, tutorials, and the latest trends in cybersecurity</p>
+                
+                <!-- Blog Stats -->
+                <div class="blog-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-book"></i>
+                        <span class="stat-number" id="totalPosts">0</span>
+                        <span class="stat-label">Articles</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-tags"></i>
+                        <span class="stat-number" id="totalTopics">10+</span>
+                        <span class="stat-label">Topics</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Readers</span>
+                    </div>
+                </div>
+            </div>
             
             <!-- Search Bar -->
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search articles...">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search articles by title, topic, or keyword...">
                 <button id="searchBtn" class="btn btn-primary">
                     <i class="fas fa-search"></i> Search
                 </button>

@@ -110,6 +110,12 @@ async function initBlogListing() {
         
         filteredPosts = [...allPosts];
         
+        // Update stats counter
+        const totalPostsEl = document.getElementById('totalPosts');
+        if (totalPostsEl) {
+            animateCounter(totalPostsEl, allPosts.length);
+        }
+        
         loadingEl.style.display = 'none';
         gridEl.style.display = 'grid';
         
@@ -468,6 +474,23 @@ function formatDate(dateString) {
         month: 'long', 
         day: 'numeric' 
     });
+}
+
+function animateCounter(element, target) {
+    let current = 0;
+    const increment = target / 30;
+    const duration = 1000;
+    const stepTime = duration / 30;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current);
+        }
+    }, stepTime);
 }
 
 // ============================================
