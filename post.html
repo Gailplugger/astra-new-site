@@ -221,6 +221,32 @@
         .back-to-blog:hover {
             gap: 0.75rem;
         }
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 2rem 0 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 3px solid var(--primary-color);
+            border-radius: 8px;
+        }
+        .author-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            object-fit: contain;
+        }
+        .author-separator {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+        .author-name {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1rem;
+        }
         .loading-post {
             text-align: center;
             padding: 8rem 2rem;
@@ -324,6 +350,13 @@
             <a href="/blog.html" class="back-to-blog">
                 <i class="fas fa-arrow-left"></i> Back to Blog
             </a>
+
+            <!-- Author Section -->
+            <div class="post-author">
+                <img src="/astraforenics-logo.png" alt="AstraForensics" class="author-logo">
+                <span class="author-separator">/</span>
+                <span class="author-name">Kartik Goyal</span>
+            </div>
 
             <div id="postTags" class="post-tags"></div>
 
