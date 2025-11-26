@@ -296,21 +296,34 @@ async function initSinglePost() {
     const urlParams = new URLSearchParams(window.location.search);
     const slug = urlParams.get('slug');
     
+    console.log('Loading post with slug:', slug);
+    
     if (!slug) {
+        console.error('No slug provided');
         showPostNotFound();
         return;
     }
     
     try {
         const url = `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/posts/${slug}.md`;
+        console.log('Fetching from URL:', url);
+        
         const response = await fetch(url);
+        console.log('Response status:', response.status);
         
         if (!response.ok) {
-            throw new Error('Post not found');
+            throw new Error(`Post not found - Status: ${response.status}`);
         }
         
         const content = await response.text();
+        console.log('Content length:', content.length);
+        
         const { frontmatter, body } = parseFrontmatter(content);
+        console.log('Parsed frontmatter:', frontmatter);
+        
+        if (!frontmatter.title) {
+            throw new Error('Invalid post format - missing title');
+        }
         
         renderPost(frontmatter, body);
         setupShareButtons(frontmatter.title);
@@ -322,61 +335,87 @@ async function initSinglePost() {
 }
 
 function renderPost(frontmatter, body) {
-    const loadingEl = document.getElementById('loadingPost');
-    const articleEl = document.getElementById('postArticle');
-    const heroEl = document.getElementById('postHero');
-    
-    // Update page meta
-    document.getElementById('pageTitle').textContent = `${frontmatter.title} - Astra Forensics`;
-    document.getElementById('pageDescription').content = frontmatter.description || body.substring(0, 160);
-    
-    // Update hero with proper image URL
-    if (frontmatter.cover_image) {
-        let imageUrl = frontmatter.cover_image;
-        // Convert relative path to GitHub raw URL if needed
-        if (!imageUrl.startsWith('http')) {
-            imageUrl = `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}${imageUrl}`;
+    try {
+        const loadingEl = document.getElementById('loadingPost');
+        const articleEl = document.getElementById('postArticle');
+        const heroEl = document.getElementById('postHero');
+        
+        if (!loadingEl || !articleEl || !heroEl) {
+            throw new Error('Required DOM elements not found');
         }
-        heroEl.style.backgroundImage = `url(${imageUrl})`;
-        heroEl.classList.add('has-image');
-    }
-    
-    document.getElementById('postTitle').textContent = frontmatter.title;
-    document.getElementById('postDate').textContent = formatDate(frontmatter.date);
-    
-    // Calculate read time
-    const wordCount = body.split(/\s+/).length;
-    const readTime = Math.ceil(wordCount / 200);
-    document.getElementById('readTime').textContent = readTime;
-    
-    // Render tags
-    if (frontmatter.tags) {
-        const tagsHtml = frontmatter.tags.split(',').map(tag => 
-            `<span class="tag">${tag.trim()}</span>`
-        ).join('');
-        document.getElementById('postTags').innerHTML = tagsHtml;
-    }
-    
-    // Render content with image URL handling
-    if (typeof marked !== 'undefined') {
-        let htmlContent = marked.parse(body);
         
-        // Fix relative image URLs in content
-        htmlContent = htmlContent.replace(/src="\/uploads\//g, 
-            `src="https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/uploads/`
-        );
-        htmlContent = htmlContent.replace(/src="uploads\//g, 
-            `src="https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/uploads/`
-        );
+        // Update page meta
+        const pageTitle = document.getElementById('pageTitle');
+        const pageDesc = document.getElementById('pageDescription');
         
-        document.getElementById('postContent').innerHTML = htmlContent;
-    } else {
-        document.getElementById('postContent').textContent = body;
+        if (pageTitle) pageTitle.textContent = `${frontmatter.title} - Astra Forensics`;
+        if (pageDesc) pageDesc.content = frontmatter.description || body.substring(0, 160);
+        
+        // Update hero with proper image URL
+        if (frontmatter.cover_image) {
+            let imageUrl = frontmatter.cover_image;
+            // Convert relative path to GitHub raw URL if needed
+            if (!imageUrl.startsWith('http')) {
+                imageUrl = `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}${imageUrl}`;
+            }
+            heroEl.style.backgroundImage = `url(${imageUrl})`;
+            heroEl.classList.add('has-image');
+        }
+        
+        const postTitle = document.getElementById('postTitle');
+        const postDate = document.getElementById('postDate');
+        const readTime = document.getElementById('readTime');
+        
+        if (postTitle) postTitle.textContent = frontmatter.title;
+        if (postDate) postDate.textContent = formatDate(frontmatter.date);
+        
+        // Calculate read time
+        const wordCount = body.split(/\s+/).length;
+        const readTimeMin = Math.ceil(wordCount / 200);
+        if (readTime) readTime.textContent = readTimeMin;
+        
+        // Render tags
+        const postTags = document.getElementById('postTags');
+        if (postTags && frontmatter.tags) {
+            const tagsHtml = frontmatter.tags.split(',').slice(0, 5).map(tag => 
+                `<span class="tag">${tag.trim()}</span>`
+            ).join('');
+            postTags.innerHTML = tagsHtml;
+        }
+        
+        // Render content with image URL handling
+        const postContent = document.getElementById('postContent');
+        if (postContent) {
+            if (typeof marked !== 'undefined') {
+                let htmlContent = marked.parse(body);
+                
+                // Fix relative image URLs in content
+                htmlContent = htmlContent.replace(/src="\/uploads\//g, 
+                    `src="https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/uploads/`
+                );
+                htmlContent = htmlContent.replace(/src="uploads\//g, 
+                    `src="https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/uploads/`
+                );
+                
+                postContent.innerHTML = htmlContent;
+            } else {
+                console.warn('Marked.js not loaded, displaying plain text');
+                postContent.textContent = body;
+            }
+        }
+        
+        // Show article
+        console.log('Rendering complete, showing article');
+        loadingEl.style.display = 'none';
+        articleEl.style.display = 'block';
+        
+        // Smooth scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+    } catch (error) {
+        console.error('Error rendering post:', error);
+        showPostNotFound();
     }
-    
-    // Show article
-    loadingEl.style.display = 'none';
-    articleEl.style.display = 'block';
 }
 
 function showPostNotFound() {
