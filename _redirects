@@ -6,8 +6,9 @@
 /cms-admin          /cms-admin/login.html       200
 /cms-admin/*        /cms-admin/:splat           200
 
-# Blog post redirects - handle dynamic routes
-/blog/*             /post.html                  200
+# Blog post redirects - Clean URLs
+# /blog/my-post-slug redirects to /post.html?slug=my-post-slug
+/blog/:slug         /post.html?slug=:slug       200!
 
 # Catch-all for SPA routing (must be last)
 /*                  /index.html                 200

@@ -159,11 +159,19 @@ function renderPosts() {
         return;
     }
     
-    gridEl.innerHTML = postsToShow.map(post => `
+    gridEl.innerHTML = postsToShow.map(post => {
+        // Handle both relative and absolute image URLs
+        let imageUrl = post.cover_image || '';
+        if (imageUrl && !imageUrl.startsWith('http')) {
+            // Convert relative path to GitHub raw URL
+            imageUrl = `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}${imageUrl}`;
+        }
+        
+        return `
         <article class="blog-card">
-            ${post.cover_image ? `
+            ${imageUrl ? `
                 <div class="blog-card-image">
-                    <img src="${post.cover_image}" alt="${post.title}" loading="lazy">
+                    <img src="${imageUrl}" alt="${post.title}" loading="lazy" onerror="this.parentElement.style.display='none'">
                 </div>
             ` : ''}
             <div class="blog-card-content">
@@ -173,10 +181,11 @@ function renderPosts() {
                 </div>
                 <h3>${post.title}</h3>
                 <p>${post.description || post.excerpt}</p>
-                <a href="post.html?slug=${post.slug}" class="read-more">Read More →</a>
+                <a href="/blog/${post.slug}" class="read-more">Read More →</a>
             </div>
         </article>
-    `).join('');
+        `;
+    }).join('');
     
     // Render pagination
     if (filteredPosts.length > POSTS_PER_PAGE) {
@@ -313,9 +322,14 @@ function renderPost(frontmatter, body) {
     document.getElementById('pageTitle').textContent = `${frontmatter.title} - Astra Forensics`;
     document.getElementById('pageDescription').content = frontmatter.description || body.substring(0, 160);
     
-    // Update hero
+    // Update hero with proper image URL
     if (frontmatter.cover_image) {
-        heroEl.style.backgroundImage = `url(${frontmatter.cover_image})`;
+        let imageUrl = frontmatter.cover_image;
+        // Convert relative path to GitHub raw URL if needed
+        if (!imageUrl.startsWith('http')) {
+            imageUrl = `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}${imageUrl}`;
+        }
+        heroEl.style.backgroundImage = `url(${imageUrl})`;
         heroEl.classList.add('has-image');
     }
     
@@ -335,9 +349,19 @@ function renderPost(frontmatter, body) {
         document.getElementById('postTags').innerHTML = tagsHtml;
     }
     
-    // Render content
+    // Render content with image URL handling
     if (typeof marked !== 'undefined') {
-        document.getElementById('postContent').innerHTML = marked.parse(body);
+        let htmlContent = marked.parse(body);
+        
+        // Fix relative image URLs in content
+        htmlContent = htmlContent.replace(/src="\/uploads\//g, 
+            `src="https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/uploads/`
+        );
+        htmlContent = htmlContent.replace(/src="uploads\//g, 
+            `src="https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/uploads/`
+        );
+        
+        document.getElementById('postContent').innerHTML = htmlContent;
     } else {
         document.getElementById('postContent').textContent = body;
     }

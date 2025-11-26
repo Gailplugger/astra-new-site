@@ -151,13 +151,17 @@ async function uploadImage(filename, base64Content) {
     const base64Data = base64Content.replace(/^data:image\/\w+;base64,/, '');
     
     try {
+        const config = getGitHubConfig();
         const result = await githubRequest(`uploads/${filename}`, 'PUT', {
-            message: `Upload image: ${filename}`,
+            message: `Upload blog image: ${filename}`,
             content: base64Data,
-            branch: getGitHubConfig().branch
+            branch: config.branch
         });
         
-        return `/uploads/${filename}`;
+        // Return the full GitHub URL for the image
+        const imageUrl = `https://raw.githubusercontent.com/${config.username}/${config.repo}/${config.branch}/uploads/${filename}`;
+        console.log('Image uploaded:', imageUrl);
+        return imageUrl;
     } catch (error) {
         console.error('Upload error:', error);
         throw error;
