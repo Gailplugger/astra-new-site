@@ -308,7 +308,13 @@ async function initSinglePost() {
         const url = `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/posts/${slug}.md`;
         console.log('Fetching from URL:', url);
         
-        const response = await fetch(url);
+        // Add timeout to prevent infinite loading
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
         console.log('Response status:', response.status);
         
         if (!response.ok) {
@@ -329,7 +335,11 @@ async function initSinglePost() {
         setupShareButtons(frontmatter.title);
         
     } catch (error) {
-        console.error('Error loading post:', error);
+        if (error.name === 'AbortError') {
+            console.error('Request timed out after 10 seconds');
+        } else {
+            console.error('Error loading post:', error);
+        }
         showPostNotFound();
     }
 }
@@ -450,13 +460,39 @@ function formatDate(dateString) {
 // INITIALIZE
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
+function initializeBlog() {
+    console.log('Initializing blog system...');
+    console.log('Current URL:', window.location.href);
+    console.log('URL params:', window.location.search);
+    
     // Check which page we're on
-    if (document.getElementById('blogGrid') && document.getElementById('searchInput')) {
+    const blogGrid = document.getElementById('blogGrid');
+    const searchInput = document.getElementById('searchInput');
+    const postArticle = document.getElementById('postArticle');
+    
+    console.log('Elements found:', {
+        blogGrid: !!blogGrid,
+        searchInput: !!searchInput,
+        postArticle: !!postArticle
+    });
+    
+    if (blogGrid && searchInput) {
         // Blog listing page
+        console.log('Initializing blog listing...');
         initBlogListing();
-    } else if (document.getElementById('postArticle')) {
+    } else if (postArticle) {
         // Single post page
+        console.log('Initializing single post...');
         initSinglePost();
+    } else {
+        console.error('Could not determine page type');
     }
-});
+}
+
+// Initialize immediately if DOM is ready, otherwise wait
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeBlog);
+} else {
+    // DOM is already ready, run immediately
+    initializeBlog();
+}
