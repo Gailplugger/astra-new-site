@@ -293,13 +293,27 @@ function setupSearch() {
 // ============================================
 
 async function initSinglePost() {
+    // Try to get slug from URL params first (direct access to post.html?slug=xyz)
     const urlParams = new URLSearchParams(window.location.search);
-    const slug = urlParams.get('slug');
+    let slug = urlParams.get('slug');
+    
+    // If no slug in params, try to extract from clean URL path (/blog/slug-name)
+    if (!slug) {
+        const path = window.location.pathname;
+        console.log('No slug in params, checking path:', path);
+        
+        // Match /blog/slug-name pattern
+        const match = path.match(/\/blog\/([^\/]+)/);
+        if (match && match[1]) {
+            slug = match[1];
+            console.log('Extracted slug from path:', slug);
+        }
+    }
     
     console.log('Loading post with slug:', slug);
     
     if (!slug) {
-        console.error('No slug provided');
+        console.error('No slug provided in URL params or path');
         showPostNotFound();
         return;
     }
