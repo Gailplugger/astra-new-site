@@ -1615,7 +1615,7 @@ body {
 
 .blog-card-excerpt {
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
     line-height: 1.8;
 }
 
@@ -1623,6 +1623,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .tag {
@@ -1633,6 +1634,112 @@ body {
     border-radius: 20px;
     font-size: 0.85rem;
     border: 1px solid rgba(0, 212, 255, 0.3);
+    font-weight: 500;
+}
+
+.read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    transition: all var(--transition-fast);
+    background: transparent;
+}
+
+.read-more:hover {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    transform: translateX(5px);
+}
+
+/* Blog Search and Filter */
+.search-bar {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--text-primary);
+    transition: border-color var(--transition-fast);
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.search-bar input::placeholder {
+    color: var(--text-secondary);
+}
+
+.filter-tag {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: 500;
+}
+
+.filter-tag:hover {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.filter-tag.active {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    border-color: var(--primary-color);
+}
+
+/* Pagination */
+.page-btn {
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-weight: 600;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.page-btn.active {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    border-color: var(--primary-color);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Loading and Error States */

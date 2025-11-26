@@ -176,12 +176,20 @@ function renderPosts() {
             ` : ''}
             <div class="blog-card-content">
                 <div class="blog-card-meta">
-                    <span>📅 ${formatDate(post.date)}</span>
-                    ${post.tags ? post.tags.split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('') : ''}
+                    <span><i class="far fa-calendar"></i> ${formatDate(post.date)}</span>
                 </div>
-                <h3>${post.title}</h3>
-                <p>${post.description || post.excerpt}</p>
-                <a href="/blog/${post.slug}" class="read-more">Read More →</a>
+                ${post.tags ? `
+                <div class="blog-card-tags">
+                    ${post.tags.split(',').slice(0, 3).map(t => `<span class="tag">${t.trim()}</span>`).join('')}
+                </div>
+                ` : ''}
+                <h3 class="blog-card-title">
+                    <a href="/blog/${post.slug}">${post.title}</a>
+                </h3>
+                <p class="blog-card-excerpt">${post.description || post.excerpt}</p>
+                <a href="/blog/${post.slug}" class="read-more">
+                    Read More <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
         </article>
         `;
