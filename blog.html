@@ -58,29 +58,44 @@
         <div class="container">
             <h1>Our <span class="gradient-text">Blog</span></h1>
             <p>Stay updated with the latest cybersecurity insights, tutorials, and industry news</p>
+            
+            <!-- Search Bar -->
+            <div class="search-bar" style="margin-top: 2rem; display: flex; gap: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <input type="text" id="searchInput" placeholder="Search articles..." style="flex: 1; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                <button id="searchBtn" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+            
+            <!-- Filter Tags -->
+            <div id="filterTags" style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;"></div>
         </div>
     </section>
 
     <!-- Blog Posts Grid -->
     <section class="blog-section">
         <div class="container">
-            <div class="blog-grid" id="blogGrid">
+            <!-- Loading State -->
+            <div id="blogLoading" class="loading" style="text-align: center; padding: 3rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+                <p style="margin-top: 1rem;">Loading blog posts...</p>
+            </div>
+            
+            <!-- Empty State -->
+            <div id="blogEmpty" style="display: none; text-align: center; padding: 3rem;">
+                <i class="fas fa-inbox" style="font-size: 3rem; color: var(--text-muted);"></i>
+                <h3 style="margin-top: 1rem;">No blog posts yet</h3>
+                <p>Check back soon for cybersecurity insights!</p>
+            </div>
+            
+            <!-- Blog Grid -->
+            <div class="blog-grid" id="blogGrid" style="display: none;">
                 <!-- Blog posts will be dynamically loaded here -->
-                <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>Loading blog posts...</p>
-                </div>
             </div>
             
             <!-- Pagination -->
-            <div class="pagination" id="pagination" style="display: none;">
-                <button class="btn-pagination" id="prevBtn" disabled>
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <div class="page-numbers" id="pageNumbers"></div>
-                <button class="btn-pagination" id="nextBtn">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>
+            <div class="pagination" id="pagination" style="display: none; margin-top: 3rem; justify-content: center; gap: 0.5rem;">
+                <!-- Pagination buttons will be dynamically added -->
             </div>
         </div>
     </section>
@@ -151,6 +166,6 @@
 
     <!-- Scripts -->
     <script src="script.js"></script>
-    <script src="blog.js"></script>
+    <script src="js/blog-loader.js"></script>
 </body>
 </html>
