@@ -3,7 +3,7 @@ title: "Email Spoofing & Phishing: How Hackers Trick You (And How to Spot Fakes)
 date: "2025-11-30"
 description: "Learn how email spoofing and phishing attacks work, real-world examples, and proven methods to identify fake emails. Stay safe from cybercriminals in 2025."
 tags: "phishing, email spoofing, cybersecurity, cybercrime, tutorial, digital forensics, email security"
-cover_image: ""
+cover_image: "https://raw.githubusercontent.com/Gailplugger/astra-new-site/main/uploads/1764490356579-blog-post.png"
 ---
 
 # Email Spoofing & Phishing: How Hackers Trick You (And How to Spot Fakes)
@@ -18,7 +18,7 @@ You might think, "I won't fall for it," but these attacks are designed by profes
 
 ## What Is Email Spoofing?
 
-**Email spoofing** is when someone sends an email pretending to be from someone else. It's like forging a letter with someone else's signature—except on the internet, it's surprisingly easy to do.
+**Email spoofing** is when someone sends an email pretending to be from someone else. It's like forging a letter with someone else's signatureâexcept on the internet, it's surprisingly easy to do.
 
 Here's how it works:
 
@@ -38,11 +38,11 @@ Here's how it works:
 **Scenario 1: Fake Bank Alert**
 ```
 From: security@yourbank.com
-Subject: ⚠️ URGENT: Suspicious Activity Detected
+Subject: â ï¸ URGENT: Suspicious Activity Detected
 Body: "Your account has been locked due to suspicious activity. Click here to verify your identity immediately or your account will be closed."
 ```
 
-The link takes you to a fake website that **looks exactly** like your real bank. You enter your username, password, and 2FA code—and boom, the hacker owns your account.
+The link takes you to a fake website that **looks exactly** like your real bank. You enter your username, password, and 2FA codeâand boom, the hacker owns your account.
 
 **Scenario 2: Job Offer Scam**
 ```
@@ -71,14 +71,14 @@ You log in to the fake site, and your real Instagram is now hacked.
 This is the #1 mistake people make. They read "security@bank.com" and trust it.
 
 **Reality check:** Hover over the sender's name to see the actual email address.
-- ✅ Real: `security@sbi.co.in`
-- ❌ Fake: `security@sbi-update.com` or `security.update@gmail.com`
+- â Real: `security@sbi.co.in`
+- â Fake: `security@sbi-update.com` or `security.update@gmail.com`
 
 ### 2. **Look for Generic Greetings**
 
 Legitimate companies use your real name.
-- ❌ "Dear User" or "Dear Customer"
-- ✅ "Dear Kartik"
+- â "Dear User" or "Dear Customer"
+- â "Dear Kartik"
 
 ### 3. **Urgency & Threats**
 
@@ -94,8 +94,8 @@ Phishers create panic to rush you into action:
 Before clicking any link:
 - Right-click and copy the link address
 - Check if the domain matches the sender
-- ❌ Link says "Verify" but points to `verify-now-secure.ru`
-- ✅ Bank link goes to the official bank domain
+- â Link says "Verify" but points to `verify-now-secure.ru`
+- â Bank link goes to the official bank domain
 
 ### 5. **Grammar & Spelling Mistakes**
 
@@ -106,7 +106,7 @@ Professional companies proofread their emails.
 
 ### 6. **Attachments from Unexpected Senders**
 
-- "Project report_URGENT.exe" — **Never download .exe, .zip, or .bat files** from unknown sources
+- "Project report_URGENT.exe" â **Never download .exe, .zip, or .bat files** from unknown sources
 - If you weren't expecting an attachment, don't open it
 
 ### 7. **Asking for Passwords or OTP**
@@ -131,13 +131,13 @@ He clicked the link and entered:
 - Login PIN
 - OTP
 
-Within 10 minutes, ₹2,50,000 was transferred from his account.
+Within 10 minutes, â¹2,50,000 was transferred from his account.
 
 **What he missed:** The sender's email was `security-update@sbi-india.site` (not the real `.co.in` domain)
 
 ### Case 2: Job Scam (2024)
 
-A girl from Delhi got a job offer from "Amazon HR" with a salary of ₹60,000/month. She downloaded the "offer letter" which contained malware.
+A girl from Delhi got a job offer from "Amazon HR" with a salary of â¹60,000/month. She downloaded the "offer letter" which contained malware.
 
 The malware:
 - Captured her bank details
@@ -156,33 +156,33 @@ Thousands of Indian teens have lost their accounts this way.
 
 ## How to Protect Yourself: Action Plan
 
-### ✅ Step 1: Enable Two-Factor Authentication (2FA)
+### â Step 1: Enable Two-Factor Authentication (2FA)
 
 Even if someone gets your password, they can't log in without your phone.
 
-**How:** Go to your email/social media → Security Settings → 2FA → Use an authenticator app (not SMS)
+**How:** Go to your email/social media â Security Settings â 2FA â Use an authenticator app (not SMS)
 
-### ✅ Step 2: Use a Password Manager
+### â Step 2: Use a Password Manager
 
 Remember unique, strong passwords for each account.
 
 **Recommendation:** Bitwarden (free) or 1Password
 
-### ✅ Step 3: Enable Email Alerts
+### â Step 3: Enable Email Alerts
 
 Let your bank/email provider alert you of login attempts from new locations.
 
-### ✅ Step 4: Verify Links Before Clicking
+### â Step 4: Verify Links Before Clicking
 
 Hover over links. Check the actual URL destination.
 
-### ✅ Step 5: Report Phishing Emails
+### â Step 5: Report Phishing Emails
 
 - Gmail: Click "Report phishing"
-- Outlook: Click "Junk" → "Phishing"
+- Outlook: Click "Junk" â "Phishing"
 - Official companies often have a reporting email (e.g., `fraud@bank.com`)
 
-### ✅ Step 6: Keep Your Devices Updated
+### â Step 6: Keep Your Devices Updated
 
 Security patches fix vulnerabilities. Don't skip updates.
 
@@ -203,10 +203,10 @@ Don't panic. Here's what to do:
 
 ## Why Phishing Still Works in 2025
 
-1. **It's easy to execute** — No special hacking skills needed
-2. **It has a high success rate** — Even a 1% click rate on 1,000 emails = 10 victims
-3. **People are in a hurry** — We don't take time to verify
-4. **Social engineering is powerful** — Humans are the weakest link
+1. **It's easy to execute** â No special hacking skills needed
+2. **It has a high success rate** â Even a 1% click rate on 1,000 emails = 10 victims
+3. **People are in a hurry** â We don't take time to verify
+4. **Social engineering is powerful** â Humans are the weakest link
 
 ---
 
@@ -218,7 +218,7 @@ Email spoofing and phishing are real threats, especially in India where cybercri
 
 - Always verify before clicking
 - Never rush through emails that ask for sensitive information
-- Trust your gut — if something feels off, it probably is
+- Trust your gut â if something feels off, it probably is
 - Stay updated on new phishing tactics
 
 At **AstraForensics**, we believe the best cybersecurity defense is an informed user. You now know how these attacks work. You know the red flags. You know how to protect yourself.
