@@ -3,7 +3,7 @@ title: "How to Identify and Avoid Phishing Attacks: A Complete Guide"
 date: "2025-12-09"
 description: "Learn to identify phishing attacks and protect yourself. Discover red flags, best practices, and proven strategies to stay safe from phishing scams and cyber threats."
 tags: "phishing, cybersecurity, awareness, email security, cyber threats, protection, digital forensics"
-cover_image: ""
+cover_image: "https://raw.githubusercontent.com/Gailplugger/astra-new-site/main/uploads/1765283458907-phishing.png"
 ---
 
 # How to Identify and Avoid Phishing Attacks: A Complete Guide
